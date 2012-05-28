@@ -27,7 +27,8 @@ public class AmharicDateAnnotator extends JCasAnnotator_ImplBase {
 				+ "[ጠጥ]ር|የካቲት|መጋቢት|ሚያዚያ|ግንቦት|ሰኔ|ሀምሌ)(\\s*)(\\d)*"
 				+ "(\\s*)(ሰኞ|ማክሰኞ|ረብኡ|ቀን|ሀሙስ|ቅዳሜ|እሁድ|አርብ)*\\s*(([1-9][0-9])\\d\\d)*";
 		// match 01/02/2009, 10-10-1998......
-		String patt2 = "((0[1-9]|1[0123])[-/.፣](0[1-9]|[12][0-9]|30)[-/.፣]"
+		String patt2 = "(((0[1-9]|[12][0-9]|30)|(0[1-9]|1[0123]))[-/.፣]" +
+				"((0[1-9]|[12][0-9]|30)|(0[1-9]|1[0123]))[-/.፣]"
 				+ "(19|20)\\d\\d)";// to match date like 01/01/2007-sample
 									// ......
 		// to match date like 1998-1999, 1900/1901, 2001,2002......
@@ -54,51 +55,45 @@ public class AmharicDateAnnotator extends JCasAnnotator_ImplBase {
 
 		Boolean m = matcher.find(), m2 = matcher2.find(), m3 = matcher3.find(), m4 = matcher4
 				.find();
-		while (m) {
+		while (m || m2 || m3 || m4) {
 
 			AmharicDate amharicDateAnnotation = new AmharicDate(aJCas);
-			amharicDateAnnotation.setDate("EthiopianDate");
-			amharicDateAnnotation.setBegin(matcher.start());
-			amharicDateAnnotation.setEnd(matcher.end());
+			if(m){
+				amharicDateAnnotation.setDate("EthiopianDate");
+				amharicDateAnnotation.setBegin(matcher.start());
+				amharicDateAnnotation.setEnd(matcher.end());
+				amharicDateAnnotation.addToIndexes();
+				m = matcher.find();
+			}
+			if (m2){
+				amharicDateAnnotation = new AmharicDate(aJCas);
+				amharicDateAnnotation.setDate("GlobalDate");
+				amharicDateAnnotation.setBegin(matcher2.start());
+				amharicDateAnnotation.setEnd(matcher2.end());
 
-			amharicDateAnnotation.addToIndexes();
-			m = matcher.find();
+				amharicDateAnnotation.addToIndexes();
+				
+				m2 = matcher2.find();
+			}
+			if(m3){
+				amharicDateAnnotation = new AmharicDate(aJCas);
+				amharicDateAnnotation.setDate("RangeDate");
+				amharicDateAnnotation.setBegin(matcher3.start());
+				amharicDateAnnotation.setEnd(matcher3.end());
+
+				amharicDateAnnotation.addToIndexes();
+				m3 = matcher3.find();
+			}
+			if(m4){
+				amharicDateAnnotation = new AmharicDate(aJCas);
+				amharicDateAnnotation.setDate("EthiopicWordDate");
+				amharicDateAnnotation.setBegin(matcher4.start());
+				amharicDateAnnotation.setEnd(matcher4.end());
+
+				amharicDateAnnotation.addToIndexes();
+				m4 = matcher4.find();
+			}
 		}
-
-		while (m2) {
-
-			AmharicDate amharicDateAnnotation = new AmharicDate(aJCas);
-			amharicDateAnnotation.setDate("GlobalDate");
-			amharicDateAnnotation.setBegin(matcher2.start());
-			amharicDateAnnotation.setEnd(matcher2.end());
-
-			amharicDateAnnotation.addToIndexes();
-			
-			m2 = matcher2.find();
-		}
-
-		while (m3) {
-
-			AmharicDate amharicDateAnnotation = new AmharicDate(aJCas);
-			amharicDateAnnotation.setDate("RangeDate");
-			amharicDateAnnotation.setBegin(matcher3.start());
-			amharicDateAnnotation.setEnd(matcher3.end());
-
-			amharicDateAnnotation.addToIndexes();
-			m3 = matcher3.find();
-		}
-
-		while (m4) {
-
-			AmharicDate amharicDateAnnotation = new AmharicDate(aJCas);
-			amharicDateAnnotation.setDate("EthiopicWordDate");
-			amharicDateAnnotation.setBegin(matcher4.start());
-			amharicDateAnnotation.setEnd(matcher4.end());
-
-			amharicDateAnnotation.addToIndexes();
-			m4 = matcher4.find();
-		}
-
 	}
 
 }
