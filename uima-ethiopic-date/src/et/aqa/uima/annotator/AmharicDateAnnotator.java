@@ -8,14 +8,19 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 
 import et.aqa.uima.AmharicDate;
-
+/**
+ * An annotator class for Ethiopic dates. Four different rules are identified to detect
+ * Ethiopic dates.
+ * @author seidm
+ *
+ */
 public class AmharicDateAnnotator extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		String txt = aJCas.getDocumentText();
 		// match ነሀሴ 21.2001, ......
-		String patt = "(\\b((ነ[ሀሃሐሓኻ][ሴሤ])|(መ[ሥስ]ከረም)|ጥቅምት|([ህኅሕኽ]ዳር)|(ታህ[ሳሣ][ስሥ])|"
+		String pattern1 = "(\\b((ነ[ሀሃሐሓኻ][ሴሤ])|(መ[ሥስ]ከረም)|ጥቅምት|([ህኅሕኽ]ዳር)|(ታህ[ሳሣ][ስሥ])|"
 				+ "([ጠጥ]ር)|(የካቲት)|(መጋቢት)|(ሚያዚያ)|(ግንቦት)|([ሰሠ]ኔ)|([ሀሃሐሓኻ]ምሌ))\\b"
 				+ "\\s*([1-9]|0[1-9]|1[0-9]|2[0-9]|30)\\s*\\b(ቀን)\\b"
 				+ "(\\s)*([,/.፣])*(\\s)*((19|20)\\d\\d))|"
@@ -27,14 +32,14 @@ public class AmharicDateAnnotator extends JCasAnnotator_ImplBase {
 				+ "[ጠጥ]ር|የካቲት|መጋቢት|ሚያዚያ|ግንቦት|ሰኔ|ሀምሌ)(\\s*)(\\d)*"
 				+ "(\\s*)(ሰኞ|ማክሰኞ|ረብኡ|ቀን|ሀሙስ|ቅዳሜ|እሁድ|አርብ)*\\s*(([1-9][0-9])\\d\\d)*";
 		// match 01/02/2009, 10-10-1998......
-		String patt2 = "(((0[1-9]|[12][0-9]|30)|(0[1-9]|1[0123]))[-/.፣]" +
+		String pattern2 = "(((0[1-9]|[12][0-9]|30)|(0[1-9]|1[0123]))[-/.፣]" +
 				"((0[1-9]|[12][0-9]|30)|(0[1-9]|1[0123]))[-/.፣]"
 				+ "(19|20)\\d\\d)";// to match date like 01/01/2007-sample
 									// ......
 		// to match date like 1998-1999, 1900/1901, 2001,2002......
-		String patt3 = "\\b((19|20)\\d\\d)\\b(\\s)*([,/.-፣])*(\\s)*\\b((19|20)\\d\\d)\\b";
+		String pattern3 = "\\b((19|20)\\d\\d)\\b(\\s)*([,/.-፣])*(\\s)*\\b((19|20)\\d\\d)\\b";
 		// to match ዘንድሮ, በሚቀጥለው አመት, በ1991 ......
-		String patt4 = "((ዛሬ|ዘንድሮ|ትናንት|ሰኞ|ማክሰኞ|ረብኡ|ሀሙስ|ቅዳሜ|እሁድ|አርብ|እለት)\\s*|"
+		String pattern4 = "((ዛሬ|ዘንድሮ|ትናንት|ሰኞ|ማክሰኞ|ረብኡ|ሀሙስ|ቅዳሜ|እሁድ|አርብ|እለት)\\s*|"
 				+ "([በለከየ])((([0-9][0-9])\\d\\d)|\\d+)+\\s*|[ከበለየ]*(አንድ|ሁለት|ሶስት|አራት|\\d*|አምስት|"
 				+ "ስድስት|ሰባት|ስምንት|ዘጠኝ|ባለፈው|ሚቀጥለው|መጭው)+\\s*"
 				+ "(አመት|አመታት|ሳምንት|ሳምንታት|ወር|ቀን|ቀናት|ሰአት|ደቂቃ|ሰከንድ"
@@ -42,11 +47,11 @@ public class AmharicDateAnnotator extends JCasAnnotator_ImplBase {
 				+ "(በፊት|በኋላ)*\\s*|([ከበለ]*አንድ|ሁለት|ሶስት|አራት|አምስት|"
 				+ "ስድስት|ሰባት|ስምንት|ዘጠኝ|አስር|አስራ)+\\s*"
 				+ "(ዓመት|ዓመታት|አመት|አመታት|ሳምንት|ሳምንታት|ወር|ደቂቃ|ሰከንድ|ቀን|ቀናት|ሰአት|ወራት|ሰአታት)\\s*)+";
-		Pattern regPat = Pattern.compile(patt);
+		Pattern regPat = Pattern.compile(pattern1);
 		// Pattern regPat1 = Pattern.compile(patt1);
-		Pattern regPat2 = Pattern.compile(patt2);
-		Pattern regPat3 = Pattern.compile(patt3);
-		Pattern regPat4 = Pattern.compile(patt4);
+		Pattern regPat2 = Pattern.compile(pattern2);
+		Pattern regPat3 = Pattern.compile(pattern3);
+		Pattern regPat4 = Pattern.compile(pattern4);
 
 		Matcher matcher = regPat.matcher(txt);
 		Matcher matcher2 = regPat2.matcher(txt);
