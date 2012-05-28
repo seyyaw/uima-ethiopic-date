@@ -13,7 +13,7 @@ import org.apache.uima.util.XMLInputSource;
 
 /**
  * A simple java class with a main method to print different Ethiopic dates
- * found and annotated in Amharic document
+ * found and annotated in Amharic document using the AmharicDateAnnotator class
  * 
  * @author seidm
  * 
